@@ -1,3 +1,3 @@
-<h1> FlaskAPI </h1>
+<h1> ReproDepot API </h1>
 
-<h3>Todo - Create List</h3>
+<h3>Flask driven RESTful API for GCP Quick Resource creation</h3>
