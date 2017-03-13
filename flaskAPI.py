@@ -22,10 +22,21 @@ def zone_explode(zoneURL):
 	return splitURL[len(splitURL)-1]
 
 
+#AUTH and SCOPE
+def get_authScope(resource):
+	
+
+	#Obtain Credentials and Scope
+	credentials = GoogleCredentials.get_application_default()
+ 
+	#Compute API initialization
+	return discovery.build(resource, 'v1', credentials=credentials)
+
+
 #Build Instances JSON
 #If no zone is specified then all zones will be investigated
 #If zone is supplied then only the instances in that zone will be returned
-def build_instances_json(zone=None):
+def build_instances_json(compute, zone=None):
 
 	#VARS
 	JSON={}
@@ -38,15 +49,11 @@ def build_instances_json(zone=None):
 	if(ZONES==[None]):
 		ZONES=GLOBALS.ZONES
 
-	#Obtain Credentials and Scope
-	credentials = GoogleCredentials.get_application_default()
 	
-	#Compute API initialization
-	compute = discovery.build('compute', 'v1', credentials=credentials)
-
 	#Read through all zones to pull the instances in the zone
 	for zone in ZONES:
 		instances = list_instances(compute,GLOBALS.PROJECT,zone)	
+		
 		if(instances == None):
 			continue
 
@@ -67,19 +74,37 @@ def build_instances_json(zone=None):
 	return jsonify(JSON)
 
 
+#Delete Instance in zone
+def delete_instance(compute, zone, name):
+	project=GLOBALS.PROJECT
+	return compute.instances().delete(project=project,zone=zone,instance=name).execute()
+
 	
 
-@app.route('/api/instances',methods=['GET'])
+@app.route('/api/list/instances',methods=['GET'])
 def GET_instances():
+	
+	compute=get_authScope('compute')
+	return build_instances_json(compute)
 
-	return build_instances_json()
 
+@app.route('/api/list/instances/<string:zone>', methods=['GET'])
+def GET_instances_zone(zone):
 
-@app.route('/api/instances/<string:zone>', methods=['GET'])
-def get_instances_zone(zone):
+	#TODO - ADD check for actual zone and throw 404 error if wrong	
+	compute=get_authScope('compute')
+	return build_instances_json(compute,zone)
 
-	#TODO - ADD check for actual zone and throw error page if wrong	
-	return build_instances_json(zone)
+@app.route('/api/delete/instances/<string:zone>/<string:name>', methods=['DELETE'])
+def DELETE_inst(zone,name):
+	compute=get_authScope('compute')
+	#if instance exists return 200 with success
+	#else thrown 404
+	status = delete_instance(compute,zone,name)
 
+	print(status.keys())
+
+	return "Success"
+	
 if __name__ == '__main__':
 	app.run(host='127.0.0.1', port=8080, debug=True)
