@@ -59,13 +59,13 @@ def build_instances_json(compute, zone=None):
 
 		
 		for instance in instances:
-	            zone=zone_explode(str(instance['zone']))
+			zone=zone_explode(str(instance['zone']))
 			
-		    if( "quick-instance" not in instance['name']):
-			continue
+			if( "quick-instance" not in instance['name']):
+				continue
 
-		    INSTANCES.append({"name":str(instance['name']),"zone":zone})
-		    itemCount+=1
+			INSTANCES.append({"name":str(instance['name']),"zone":zone})
+			itemCount+=1
 		
 
 	JSON['object_count']=itemCount
