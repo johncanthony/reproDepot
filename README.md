@@ -4,13 +4,19 @@
 
 
 <ul><li><h5> List Instances [GET]</h5>
-/api/list/instances
+/api/instances
 
 <li><h5> List Instances in Zone [GET]</h5>
-/api/list/linstances/[zone]
+/api/instances/[zone]
 
 <li><h5> Delete Instance in Zone [DELETE]</h5>
-/api/delete/instances/[zone]/[instance-name]
+/api/instances/[zone]/[instance-name]
+
+<li><h5> Create Instance in specified Zone [POST]</h5>
+/api/instances/[zone]
+
+<li><h5> Create Instance in 'us-central1-c' Zone [POST]</h5>
+/api/instances
 
 
 
